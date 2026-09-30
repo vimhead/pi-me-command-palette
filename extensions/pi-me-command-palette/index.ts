@@ -10,7 +10,7 @@ import {
 	type Focusable,
 	type TUI,
 } from "@earendil-works/pi-tui";
-import { definePiMeExtension, registerPiMeExtension, type LineEditor, type PiMeApi, type PiMeEditor } from "pi-me/api";
+import { defineVipiEditorExtension, registerVipiEditorExtension, type LineEditor, type VipiEditorApi, type PromptEditor } from "vipi-editor/api";
 
 type ExtensionCommandInfo = ReturnType<ExtensionAPI["getCommands"]>[number];
 type PaletteCommandSource = ExtensionCommandInfo["source"] | "builtin";
@@ -26,7 +26,7 @@ type OverlayMargin = number | { top?: number; right?: number; bottom?: number; l
 type OverlayRowBudgetOptions = { maxHeight: SizeValue | undefined; margin: OverlayMargin };
 
 type PaletteResult = { command: CommandInfo; args: string } | { cancel: true };
-type ExecuteCommandOptions = { command: CommandInfo; args: string; editor: PiMeEditor };
+type ExecuteCommandOptions = { command: CommandInfo; args: string; editor: PromptEditor };
 type PaletteStage = "select" | "args";
 type RankedCommand = {
 	command: CommandInfo;
@@ -39,7 +39,7 @@ type CommandPaletteOptions = {
 	keybindings: KeybindingsManager;
 	finish: (result: PaletteResult) => void;
 	commands: CommandInfo[];
-	createLineEditor: PiMeApi["vim"]["createLineEditor"];
+	createLineEditor: VipiEditorApi["vim"]["createLineEditor"];
 };
 
 type BoxSections = {
@@ -172,7 +172,11 @@ async function fetchArgumentSuggestions(
 	}
 }
 
-const registration = definePiMeExtension({
+export default function registerPlugin(pi: ExtensionAPI): void {
+	registerVipiEditorExtension(pi, registration);
+}
+
+export const registration = defineVipiEditorExtension({
 	extensionId: "pi-me-command-palette",
 	setup(api) {
 		api.vim.registerBinding("normal", {
@@ -184,7 +188,6 @@ const registration = definePiMeExtension({
 					api,
 					pi,
 					ctx,
-					onClosed: () => api.vim.focusEditor(editor),
 				});
 				if ("command" in result) await executeCommand({ command: result.command, args: result.args, editor });
 			},
@@ -192,9 +195,6 @@ const registration = definePiMeExtension({
 	},
 });
 
-export default function piMeCommandPalette(pi: ExtensionAPI) {
-	registerPiMeExtension(pi, registration);
-}
 
 function allCommands(pi: ExtensionAPI): CommandInfo[] {
 	const extensionCommands = pi.getCommands().map((command) => ({
@@ -223,9 +223,8 @@ function shouldRestoreDraftAfterCommand(command: CommandInfo): boolean {
 	return command.source === "builtin";
 }
 
-async function openCommandPalette(options: { api: PiMeApi; pi: ExtensionAPI; ctx: ExtensionContext; onClosed: () => void }): Promise<PaletteResult> {
+async function openCommandPalette(options: { api: VipiEditorApi; pi: ExtensionAPI; ctx: ExtensionContext }): Promise<PaletteResult> {
 	const commands = allCommands(options.pi).sort(compareCommands);
-	try {
 		const result = await options.ctx.ui.custom<PaletteResult>((tui, theme, keybindings, finish) => {
 			return new CommandPalette({ tui, theme, keybindings, finish, commands, createLineEditor: options.api.vim.createLineEditor });
 		}, {
@@ -234,13 +233,16 @@ async function openCommandPalette(options: { api: PiMeApi; pi: ExtensionAPI; ctx
 		});
 
 		return result ?? { cancel: true };
-	} finally {
-		options.onClosed();
-	}
 }
 
-class CommandPalette implements Component, Focusable {
-	focused = true;
+export class CommandPalette implements Component, Focusable {
+	private isPaletteFocused = true;
+
+	get focused(): boolean { return this.isPaletteFocused; }
+	set focused(value: boolean) {
+		this.isPaletteFocused = value;
+		this.activeLine().setFocused(value);
+	}
 	private stage: PaletteStage = "select";
 	private query: LineEditor;
 	private args: LineEditor;
@@ -297,8 +299,8 @@ class CommandPalette implements Component, Focusable {
 	}
 
 	handleInput(data: string): void {
-		if (matchesKey(data, "escape")) this.escape();
-		else if (matchesKey(data, "enter")) {
+		if (this.keybindings.matches(data, "tui.select.cancel") || matchesKey(data, "escape")) this.escape();
+		else if (this.keybindings.matches(data, "tui.select.confirm")) {
 			this.confirm();
 			return;
 		} else if (matchesKey(data, "tab")) this.tab();
@@ -659,10 +661,10 @@ class CommandPalette implements Component, Focusable {
 	}
 
 	private closeLineEditors(): void {
-		this.query.setFocused(false);
-		this.args.setFocused(false);
-		this.query.dispose();
-		this.args.dispose();
+		const active = this.activeLine();
+		const inactive = active === this.query ? this.args : this.query;
+		inactive.dispose();
+		active.dispose();
 	}
 }
 

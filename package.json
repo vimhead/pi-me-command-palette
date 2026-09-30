@@ -4,7 +4,7 @@
   "homepage": "https://github.com/vimhead/pi-me-command-palette#readme",
   "bugs": { "url": "https://github.com/vimhead/pi-me-command-palette/issues" },
   "version": "0.2.0",
-  "description": "Command palette plugin for pi-me with modal query editing and command argument completion.",
+  "description": "Command palette plugin for vipi-editor with modal query editing and command argument completion.",
   "type": "module",
   "license": "MIT",
   "keywords": [
@@ -23,20 +23,21 @@
     ]
   },
   "dependencies": {
-    "pi-me": "git+https://github.com/vimhead/pi-me.git"
+    "vipi-editor": "git+https://github.com/vimhead/vipi-editor.git"
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
     "@earendil-works/pi-tui": "*"
   },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-coding-agent": "^0.99.1",
     "@types/node": "^26.2.0",
     "typescript": "^5.9.0",
-    "@earendil-works/pi-tui": "^0.84.2"
+    "@earendil-works/pi-tui": "^0.99.1"
   },
   "scripts": {
     "check": "tsc --noEmit",
+    "test": "node --import ./tests/loader.mjs --test tests/*.test.mjs",
     "pack:dry": "npm pack --dry-run"
   }
 }

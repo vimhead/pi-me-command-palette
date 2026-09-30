@@ -5,7 +5,7 @@ Find and run Pi slash commands from a searchable keyboard palette.
 ## Install
 
 ```sh
-pi install git:github.com/vimhead/pi-me
+pi install git:github.com/vimhead/vipi-editor
 pi install git:github.com/vimhead/pi-me-command-palette
 ```
 
