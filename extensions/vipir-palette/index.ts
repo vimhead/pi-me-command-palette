@@ -10,7 +10,7 @@ import {
 	type Focusable,
 	type TUI,
 } from "@earendil-works/pi-tui";
-import { defineVipiEditorExtension, registerVipiEditorExtension, type LineEditor, type VipiEditorApi, type PromptEditor } from "vipi-editor/api";
+import { defineVipirEditorExtension, registerVipirEditorExtension, type LineEditor, type VipirEditorApi, type PromptEditor } from "vipir-editor/api";
 
 type ExtensionCommandInfo = ReturnType<ExtensionAPI["getCommands"]>[number];
 type PaletteCommandSource = ExtensionCommandInfo["source"] | "builtin";
@@ -39,7 +39,7 @@ type CommandPaletteOptions = {
 	keybindings: KeybindingsManager;
 	finish: (result: PaletteResult) => void;
 	commands: CommandInfo[];
-	createLineEditor: VipiEditorApi["vim"]["createLineEditor"];
+	createLineEditor: VipirEditorApi["vim"]["createLineEditor"];
 };
 
 type BoxSections = {
@@ -173,11 +173,11 @@ async function fetchArgumentSuggestions(
 }
 
 export default function registerPlugin(pi: ExtensionAPI): void {
-	registerVipiEditorExtension(pi, registration);
+	registerVipirEditorExtension(pi, registration);
 }
 
-export const registration = defineVipiEditorExtension({
-	extensionId: "pi-me-command-palette",
+export const registration = defineVipirEditorExtension({
+	extensionId: "vipir-palette",
 	setup(api) {
 		api.vim.registerBinding("normal", {
 			keys: ["space", "space"],
@@ -223,7 +223,7 @@ function shouldRestoreDraftAfterCommand(command: CommandInfo): boolean {
 	return command.source === "builtin";
 }
 
-async function openCommandPalette(options: { api: VipiEditorApi; pi: ExtensionAPI; ctx: ExtensionContext }): Promise<PaletteResult> {
+async function openCommandPalette(options: { api: VipirEditorApi; pi: ExtensionAPI; ctx: ExtensionContext }): Promise<PaletteResult> {
 	const commands = allCommands(options.pi).sort(compareCommands);
 		const result = await options.ctx.ui.custom<PaletteResult>((tui, theme, keybindings, finish) => {
 			return new CommandPalette({ tui, theme, keybindings, finish, commands, createLineEditor: options.api.vim.createLineEditor });

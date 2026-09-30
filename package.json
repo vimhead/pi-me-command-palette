@@ -1,10 +1,10 @@
 {
-  "name": "pi-me-command-palette",
-  "repository": { "type": "git", "url": "git+https://github.com/vimhead/pi-me-command-palette.git" },
-  "homepage": "https://github.com/vimhead/pi-me-command-palette#readme",
-  "bugs": { "url": "https://github.com/vimhead/pi-me-command-palette/issues" },
+  "name": "vipir-palette",
+  "repository": { "type": "git", "url": "git+https://github.com/vimhead/vipir-palette.git" },
+  "homepage": "https://github.com/vimhead/vipir-palette#readme",
+  "bugs": { "url": "https://github.com/vimhead/vipir-palette/issues" },
   "version": "0.2.0",
-  "description": "Command palette plugin for vipi-editor with modal query editing and command argument completion.",
+  "description": "Command palette plugin for vipir-editor with modal query editing and command argument completion.",
   "type": "module",
   "license": "MIT",
   "keywords": [
@@ -19,11 +19,11 @@
   ],
   "pi": {
     "extensions": [
-      "./extensions/pi-me-command-palette/index.ts"
+      "./extensions/vipir-palette/index.ts"
     ]
   },
   "dependencies": {
-    "vipi-editor": "git+https://github.com/vimhead/vipi-editor.git"
+    "vipir-editor": "git+https://github.com/vimhead/vipir-editor.git"
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
