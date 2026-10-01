@@ -1,8 +1,8 @@
 {
-  "name": "vipir-palette",
-  "repository": { "type": "git", "url": "git+https://github.com/vimhead/vipir-palette.git" },
-  "homepage": "https://github.com/vimhead/vipir-palette#readme",
-  "bugs": { "url": "https://github.com/vimhead/vipir-palette/issues" },
+  "name": "vipir-command-palette",
+  "repository": { "type": "git", "url": "git+https://github.com/vimhead/vipir-command-palette.git" },
+  "homepage": "https://github.com/vimhead/vipir-command-palette#readme",
+  "bugs": { "url": "https://github.com/vimhead/vipir-command-palette/issues" },
   "version": "0.2.0",
   "description": "Command palette plugin for vipir-editor with modal query editing and command argument completion.",
   "type": "module",
@@ -19,7 +19,7 @@
   ],
   "pi": {
     "extensions": [
-      "./extensions/vipir-palette/index.ts"
+      "./extensions/vipir-command-palette/index.ts"
     ]
   },
   "dependencies": {

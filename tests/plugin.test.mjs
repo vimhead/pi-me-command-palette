@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { CURSOR_MARKER, visibleWidth } from "@earendil-works/pi-tui";
 import { createFixture } from "./fixture.mjs";
-import { CommandPalette, registration as paletteRegistration } from "../extensions/vipir-palette/index.ts";
+import { CommandPalette, registration as paletteRegistration } from "../extensions/vipir-command-palette/index.ts";
 
 test("palette query and arguments share focus, obey overlay visibility, and restore the prompt", context => {
   const fixture = createFixture(context);
@@ -69,11 +69,11 @@ test("palette binding opens one coordinated overlay and preserves the prompt dra
 
 
 test("plugin registers with the shared vipir-editor runtime API", async () => {
-  const { default: registerPlugin, registration } = await import("../extensions/vipir-palette/index.ts");
+  const { default: registerPlugin, registration } = await import("../extensions/vipir-command-palette/index.ts");
   const { VIPIR_EDITOR_REGISTER } = await import("vipir-editor/api");
   const events = [];
   registerPlugin({ events: { emit: (channel, data) => events.push({ channel, data }), on: () => () => {} } });
   assert.equal(events[0].channel, VIPIR_EDITOR_REGISTER);
   assert.equal(events[0].data, registration);
-  assert.equal(registration.extensionId, "vipir-palette");
+  assert.equal(registration.extensionId, "vipir-command-palette");
 });

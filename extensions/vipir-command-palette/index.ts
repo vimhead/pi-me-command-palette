@@ -177,7 +177,7 @@ export default function registerPlugin(pi: ExtensionAPI): void {
 }
 
 export const registration = defineVipirEditorExtension({
-	extensionId: "vipir-palette",
+	extensionId: "vipir-command-palette",
 	setup(api) {
 		api.vim.registerBinding("normal", {
 			keys: ["space", "space"],

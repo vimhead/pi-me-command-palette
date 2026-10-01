@@ -1,4 +1,4 @@
-# vipir-palette
+# vipir-command-palette
 
 Find and run Pi slash commands from a searchable keyboard palette.
 
@@ -6,7 +6,7 @@ Find and run Pi slash commands from a searchable keyboard palette.
 
 ```sh
 pi install git:github.com/vimhead/vipir-editor
-pi install git:github.com/vimhead/vipir-palette
+pi install git:github.com/vimhead/vipir-command-palette
 ```
 
 Run **`/reload`**. Enabled by default in [Vipir](https://github.com/vimhead/vipir).
@@ -17,4 +17,4 @@ Press **Esc**, then **Space Space** in the prompt. Type to filter commands, use 
 
 Query and argument fields support modal editing. **Esc** leaves insert mode; another **Esc** closes or goes back. In normal mode, **j/k** select and **i** returns to typing.
 
-Disable in `/vipir` and sync, or run `pi remove git:github.com/vimhead/vipir-palette` and reload.
+Disable in `/vipir` and sync, or run `pi remove git:github.com/vimhead/vipir-command-palette` and reload.
